@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Albums</h2>
+<ul style="list-style: none">
+{% for album in albums %}
+<li style="float: left;margin: 0.5em"><a href="{% url 'album_songs' album %}">{{ album }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

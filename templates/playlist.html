@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Playlist</h2>
+<ul style="list-style: none">
+{% for song in playlist %}
+<li>{{ song.pos }}: {{ song.artist }} - {{ song.title }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

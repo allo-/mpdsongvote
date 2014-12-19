@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Design by TEMPLATED
+http://templated.co
+Released for free under the Creative Commons Attribution License
+
+Name       : Outstretched 
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20131014
+
+-->
+{% load static from staticfiles %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="{% static "design/default.css" %}" rel="stylesheet" type="text/css" media="all" />
+<link href="{% static "design/fonts.css" %}" rel="stylesheet" type="text/css" media="all" />
+<!--[if IE 6]>
+<link href="{% static "design/default_ie6.css" %}" rel="stylesheet" type="text/css" />
+<![endif]-->
+</head>
+<body>
+<div id="wrapper">
+	<div id="header-wrapper">
+		<div id="header" class="container">
+			<div id="logo">
+				<h1><a href="#">MPD Song Vote</a></h1>
+				<p>Vote for your favourite songs and help to create a great playlist</p>
+			</div>
+		</div>
+		<div id="menu" class="container">
+			<ul>
+                <li class="{% if page == "playlist" %}current_page_item{% endif %}">
+                    <a href="{% url 'playlist' %}" accesskey="1" title="">Current Playlist</a>
+                    </li>
+                <li class="{% if page == "artists" %}current_page_item{% endif %}">
+                <a href="{% url 'artists' %}" accesskey="1" title="">By Artist</a>
+                </li>
+                <li class="{% if page == "album_songs" %}current_page_item{% endif %}">
+                <a href="{% url 'albums' %}" accesskey="2" title="">By Album</a>
+                </li>
+                {% if artist and not album %}
+                <li>
+                    <a href="#" accesskey="3" title="">By Album from {{ artist }}</a>
+                </li>
+                {% elif album and not artist %}
+                <li>
+                    <a href="#" accesskey="3" title="">By Artist on {{ album }}</a>
+                </li>
+                {% endif %}
+			</ul>
+		</div>
+	</div>
+	<div id="page" class="container">
+		<div id="sidebar1">
+			<div id="box1">
+				<h2>Recently played</h2>
+				<ul class="style1">
+					<li class="first"><a href="#">song 1</a></li>
+					<li><a href="#">song 2</a></li>
+				</ul>
+				<a href="#" class="button">more</a> </div>
+			<!--<div id="box2">
+				<h2>Nulla luctus</h2>
+				<ul class="style1">
+					<li class="first"><a href="#">Vestibulum luctus venenatis dui</a></li>
+					<li><a href="#">Aenean elementum facilisis ligula</a></li>
+					<li><a href="#">Ut tincidunt elit vitae augue</a></li>
+					<li><a href="#">Aenean elementum facilisis ligula</a></li>
+				</ul>
+                <a href="#" class="button">Read More</a> </div>-->
+		</div>
+		<div id="content">
+        {% block content %}
+        {% endblock %}
+		</div>
+		<div id="sidebar2">
+			<div>
+				<h2>Currently most wanted</h2>
+				<ul class="style2">
+					<li class="first">
+						<h3><a href="#">song 3</a></h3>
+						<p><a href="#">artist</a></p>
+					</li>
+					<li>
+						<h3><a href="#">song 4</a></h3>
+						<p><a href="#">artist</a></p>
+					</li>
+				<a href="#" class="button">more</a> </div>
+		</div>
+	</div>
+</div>
+<div id="footer">
+	<p>MPDSongVote. All rights reserved. Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
+</div>
+</body>
+</html>
+
