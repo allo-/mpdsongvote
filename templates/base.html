@@ -38,18 +38,14 @@ Released   : 20131014
                     <a href="{% url 'playlist' %}" accesskey="1" title="">Current Playlist</a>
                     </li>
                 <li class="{% if page == "artists" %}current_page_item{% endif %}">
-                <a href="{% url 'artists' %}" accesskey="1" title="">By Artist</a>
+                <a href="{% url 'artists' %}" accesskey="1" title="">Artists</a>
                 </li>
                 <li class="{% if page == "album_songs" %}current_page_item{% endif %}">
-                <a href="{% url 'albums' %}" accesskey="2" title="">By Album</a>
+                <a href="{% url 'albums' %}" accesskey="2" title="">Albums</a>
                 </li>
-                {% if artist and not album %}
+                {% if artist and album %}
                 <li>
-                    <a href="#" accesskey="3" title="">By Album from {{ artist }}</a>
-                </li>
-                {% elif album and not artist %}
-                <li>
-                    <a href="#" accesskey="3" title="">By Artist on {{ album }}</a>
+                <a href="{% url 'artist_albums' artist %}" accesskey="3" title="">Albums with {{ artist }}</a>
                 </li>
                 {% endif %}
 			</ul>
