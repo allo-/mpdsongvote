@@ -5,9 +5,11 @@ def playlist(request):
     c = MPDClient()
     c.connect("localhost", 6600)
     playlist = c.playlistid()
+    current_songid = c.status()['songid']
     c.disconnect()
     return render(request, 'playlist.html', {
         'page': 'playlist',
+        'current_songid': current_songid,
         'playlist': playlist 
     })
 

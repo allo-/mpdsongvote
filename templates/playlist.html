@@ -3,7 +3,9 @@
 <h2>Playlist</h2>
 <ul style="list-style: none">
 {% for song in playlist %}
-<li>{{ song.pos }}: {{ song.artist }} - {{ song.title }}</li>
+<li style="{% if song.id == current_songid %}font-weight: bold{% endif %}">
+    {{ song.pos }}: {{ song.artist }} - {{ song.title }}
+</li>
 {% endfor %}
 </ul>
 {% endblock %}
