@@ -2,7 +2,7 @@
 {% block content %}
 <h2>{{ album }}</h2>
 {% for song in songs %}
-<li>{{ song.track }}: {% if not artist and song.artist %}{{ song.artist}} - {% endif %}{{ song.title }}</li>
+<li>{% if song.track %}{{ song.track }}{% else %}{{ forloop.counter}}{% endif %}: {% if not artist and song.artist %}{{ song.artist}} - {% endif %}{{ song.title }}</li>
 {% endfor %}
 </ul>
 {% endblock %}
