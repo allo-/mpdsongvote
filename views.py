@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from mpd import MPDClient
-from urllib import quote_plus, unquote_plus
 from django.db import models
 from django.contrib import messages
 from models import *
+from forms import *
 
 
 # minimum vote difference for a song to be moved up/down
@@ -29,7 +29,6 @@ def playlist(request):
             song['votes'] = votes[song['file']]
         else:
             song['votes'] = 0
-        song['quoted_filename'] = quote_plus(song['file']).replace("/", "%2F")
     current_songid = c.status()['songid']
     c.disconnect()
     return render(request, 'playlist.html', {
@@ -104,8 +103,16 @@ def album_songs(request, album):
     })
 
 
-def playlist_vote(request, quoted_filename, up):
-    filename = unquote_plus(quoted_filename)
+def playlist_vote(request, up):
+    form = PlaylistVoteForm(request.POST or None)
+    if not form.is_valid():
+        for error in form.errors:
+            messages.add_message(
+                request, messages.ERROR,
+                "{0}: {1}".format(error, form.errors[error][0])
+            )
+        return redirect(reverse(playlist))
+    filename = form.cleaned_data['filename']
 
     c = MPDClient()
     c.connect("localhost", 6600)
@@ -130,12 +137,12 @@ def playlist_vote(request, quoted_filename, up):
     else:
         voted_text = "Voted down: {artist} - {title}"
 
-    messages.add_message(request, messages.INFO, voted_text.format(
+    messages.add_message(
+        request, messages.INFO, voted_text.format(
             artist=track.get("artist", "unknown artist"),
             title=track.get("title", "unknown title")
         )
     )
-
 
     votes = _get_votes()
     songid = int(track['id'])
@@ -160,7 +167,8 @@ def playlist_vote(request, quoted_filename, up):
             voted_text = "Moved up: {artist} - {title}"
         else:
             voted_text = "Moved down: {artist} - {title}"
-        messages.add_message(request, messages.INFO, voted_text.format(
+        messages.add_message(
+            request, messages.INFO, voted_text.format(
                 artist=track.get("artist", "unknown artist"),
                 title=track.get("title", "unknown title")
             )

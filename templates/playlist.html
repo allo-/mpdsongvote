@@ -11,8 +11,20 @@
         <td style="padding: 0">
             <div style="border: thin solid black;padding: 3px;margin: 0;">{{ song.votes }}</div>
         </td>
-        <td><a href="{% url 'playlist_vote_up' quoted_filename=song.quoted_filename %}">⇧</a></td>
-        <td><a href="{% url 'playlist_vote_down' quoted_filename=song.quoted_filename %}">⇩</a></td>
+        <td>
+            <form action="{% url 'playlist_vote_up' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="filename" value="{{ song.file }}" />
+                <input type="submit" value="⇧" />
+            </form>
+        </td>
+        <td>
+            <form action="{% url 'playlist_vote_down' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="filename" value="{{ song.file }}" />
+                <input type="submit" value="⇩" />
+            </form>
+        </td>
     </tr>
 {% endfor %}
 </table>

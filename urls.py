@@ -13,9 +13,9 @@ urlpatterns = patterns('',
     url(r'^artist/(?P<artist>[^/]*)/(?P<album>[^/]*)/$', artist_album_songs,
         name='artist_album_songs'),
 
-    url(r'^playlist/vote/up/(?P<quoted_filename>[^/]*)/$', playlist_vote,
+    url(r'^playlist/vote/up/$', playlist_vote,
         {'up': True}, name="playlist_vote_up"),
-    url(r'^playlist/vote/down/(?P<quoted_filename>[^/]*)/$', playlist_vote,
+    url(r'^playlist/vote/down/$', playlist_vote,
         {'up': False}, name="playlist_vote_down"),
 
     url(r'^$', playlist, name="playlist"),
