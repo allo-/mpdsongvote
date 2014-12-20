@@ -13,5 +13,5 @@ class PlaylistVote(models.Model):
     value = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return "PlaylistVote<file={0}, up={1}>".format(
-            self.playlistitem.filename, self.up)
+        return "PlaylistVote<file={0}, value={1}>".format(
+            self.playlistitem.filename, self.value)
