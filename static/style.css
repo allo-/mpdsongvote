@@ -23,3 +23,7 @@ div.votecount {
     margin: 0;
     padding: 0 0.2em;
 }
+
+table.playlist td {
+    max-width: 450px;
+}

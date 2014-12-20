@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Playlist</h2>
-<table>
+<table class="playlist">
 {% for song in playlist %}
     <tr>
         <td style="text-align: right;padding-right: 0.5em">{{ song.pos|add:1 }}:</td>
