@@ -6,14 +6,22 @@ from django.db import models
 from models import *
 
 
+# minimum vote difference for a song to be moved up/down
+MIN_MOVE_DIFFERENCE = 2
+
+
+def _get_votes():
+    playlistitems = PlaylistItem.objects.all().annotate(
+        votes=models.Sum('playlistvote__value')).values()
+    return dict([(x['filename'], x['votes']) for x in playlistitems])
+
+
 def playlist(request):
     c = MPDClient()
     c.connect("localhost", 6600)
     playlist = c.playlistid()
 
-    playlistitems = PlaylistItem.objects.all().annotate(
-        votes=models.Sum('playlistvote__value')).values()
-    votes = dict([(x['filename'], x['votes']) for x in playlistitems])
+    votes = _get_votes()
 
     for song in playlist:
         if song['file'] in votes:
@@ -96,10 +104,44 @@ def album_songs(request, album):
 
 
 def playlist_vote(request, quoted_filename, up):
+    c = MPDClient()
+    c.connect("localhost", 6600)
     filename = unquote(quoted_filename)
     pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
     if pi_created:
         pi.save()
     pv = PlaylistVote(playlistitem=pi, value=+1 if up else -1)
     pv.save()
+
+    pl = c.playlistid()
+    tracks = filter(lambda x: x['file'] == filename, pl)
+    # track not in playlist
+    if not len(tracks):
+        return redirect(reverse(playlist))
+    elif len(tracks) > 1:
+        # TODO: remove all but the first one from playlist
+        pass
+    votes = _get_votes()
+
+    track = tracks[0]
+    songid = int(track['id'])
+    pos = int(track['pos'])
+    movepos = None
+    if up:
+        # pos -1 .. 1 (never move before the first (playing) song)
+        for plpos in xrange(pos-1, 0, -1):
+            if votes.get(filename, 0) - MIN_MOVE_DIFFERENCE \
+               >= votes.get(pl[plpos]['file'], 0):
+                    movepos = plpos
+    else:
+        # pos+1 .. end
+        for plpos in xrange(pos+1, len(pl)):
+            if votes.get(filename, 0) + MIN_MOVE_DIFFERENCE \
+               <= votes.get(pl[plpos]['file'], 0):
+                    movepos = plpos
+
+    if movepos is not None:
+        c.moveid(songid, movepos)
+
+    c.disconnect()
     return redirect(reverse(playlist))
