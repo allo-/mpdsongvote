@@ -1,0 +1,25 @@
+ul.style2 p {
+    line-height: 100%;
+    margin-bottom: 5px;
+}
+
+ul.style2 li {
+    padding-top: 5px 0 0 0;
+}
+
+ul.style2 h3 {
+    padding: 0px;
+}
+
+input.votebutton {
+    background-color: #308576;
+    color: white;
+    border: none;
+}
+
+div.votecount {
+    border: thin solid black;
+    text-align: center;
+    margin: 0;
+    padding: 0 0.2em;
+}

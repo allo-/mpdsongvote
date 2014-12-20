@@ -9,20 +9,20 @@
             {{ song.artist }} - {{ song.title }}
         </td>
         <td style="padding: 0">
-            <div style="border: thin solid black;padding: 3px;margin: 0;">{{ song.votes }}</div>
+            <div class="votecount">{{ song.votes }}</div>
         </td>
         <td>
             <form action="{% url 'playlist_vote_up' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="filename" value="{{ song.file }}" />
-                <input type="submit" value="⇧" />
+                <input type="submit" value="⇧" class="votebutton" />
             </form>
         </td>
         <td>
             <form action="{% url 'playlist_vote_down' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="filename" value="{{ song.file }}" />
-                <input type="submit" value="⇩" />
+                <input type="submit" value="⇩" class="votebutton" />
             </form>
         </td>
     </tr>
