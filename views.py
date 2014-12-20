@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from mpd import MPDClient
 from urllib import quote_plus, unquote_plus
 from django.db import models
+from django.contrib import messages
 from models import *
 
 
@@ -104,26 +105,39 @@ def album_songs(request, album):
 
 
 def playlist_vote(request, quoted_filename, up):
+    filename = unquote_plus(quoted_filename)
+
     c = MPDClient()
     c.connect("localhost", 6600)
-    filename = unquote_plus(quoted_filename)
-    pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
-    if pi_created:
-        pi.save()
-    pv = PlaylistVote(playlistitem=pi, value=+1 if up else -1)
-    pv.save()
-
     pl = c.playlistid()
     tracks = filter(lambda x: x['file'] == filename, pl)
+
     # track not in playlist
     if not len(tracks):
         return redirect(reverse(playlist))
     elif len(tracks) > 1:
         # TODO: remove all but the first one from playlist
         pass
-    votes = _get_votes()
-
     track = tracks[0]
+
+    pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
+    if pi_created:
+        pi.save()
+    pv = PlaylistVote(playlistitem=pi, value=+1 if up else -1)
+    pv.save()
+    if up:
+        voted_text = "Voted up: {artist} - {title}"
+    else:
+        voted_text = "Voted down: {artist} - {title}"
+
+    messages.add_message(request, messages.INFO, voted_text.format(
+            artist=track.get("artist", "unknown artist"),
+            title=track.get("title", "unknown title")
+        )
+    )
+
+
+    votes = _get_votes()
     songid = int(track['id'])
     pos = int(track['pos'])
     movepos = None
@@ -142,6 +156,15 @@ def playlist_vote(request, quoted_filename, up):
 
     if movepos is not None:
         c.moveid(songid, movepos)
+        if up:
+            voted_text = "Moved up: {artist} - {title}"
+        else:
+            voted_text = "Moved down: {artist} - {title}"
+        messages.add_message(request, messages.INFO, voted_text.format(
+                artist=track.get("artist", "unknown artist"),
+                title=track.get("title", "unknown title")
+            )
+        )
 
     c.disconnect()
     return redirect(reverse(playlist))

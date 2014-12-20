@@ -71,6 +71,13 @@ Released   : 20131014
                 <a href="#" class="button">Read More</a> </div>-->
 		</div>
 		<div id="content">
+            {% if messages %}
+            <ul style="border: 3px solid #308576;padding: 0.5em;list-style: none">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         {% block content %}
         {% endblock %}
 		</div>
