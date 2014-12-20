@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import random
 import mpd
-import mpdsongvote.models
+from mpdsongvote import models
 
 
 PLAYLIST_LENGTH = 100  # desired playlist length after removing/adding songs
@@ -25,8 +25,10 @@ def update_playlist(main=False):
 
     main_print(main, "removing:")
     for i in xrange(current_song_no):
-        main_print(main, playlist_songs_by_pos[0]['file'])
+        filename = playlist_songs_by_pos[0]['file']
+        main_print(main, filename)
         c.delete(0)
+        models.PlaylistItem.objects.filter(filename=filename).delete()
 
     # 2) add new songs at the bottom
     playlist_songs = dict(map(lambda x: (x['file'], x), c.playlistid()))
