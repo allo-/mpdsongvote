@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib import messages
 from models import *
 from forms import *
+from update_playlist import update_playlist
 
 
 # minimum vote difference for a song to be moved up/down
@@ -104,12 +105,13 @@ def album_songs(request, album):
 
 
 def playlist_vote(request, up):
+    update_playlist()
     form = PlaylistVoteForm(request.POST or None)
     if not form.is_valid():
         for error in form.errors:
             messages.add_message(
                 request, messages.ERROR,
-                "{0}: {1}".format(error, form.errors[error][0])
+                "{0}".format(form.errors[error][0])
             )
         return redirect(reverse(playlist))
     filename = form.cleaned_data['filename']

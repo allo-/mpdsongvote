@@ -6,7 +6,8 @@ def validate_in_playlist(filename):
     c = MPDClient()
     c.connect("localhost", 6600)
     if not len(c.playlistfind("file", filename)):
-        raise forms.ValidationError("Voted Track is not in the playlist.")
+        raise forms.ValidationError(
+            "Voted Track is no longer in the playlist.")
     c.disconnect()
 
 

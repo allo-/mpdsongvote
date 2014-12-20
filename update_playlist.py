@@ -3,18 +3,24 @@ import random
 import mpd
 import mpdsongvote.models
 
+
 PLAYLIST_LENGTH = 100  # desired playlist length after removing/adding songs
+
 
 def main_print(main, args):
     if main:
         print args
+
 
 def update_playlist(main=False):
     c = mpd.MPDClient()
     c.connect("localhost", 6600)
 
     # 1) remove played songs from the beginning
-    playlist_songs_by_pos = dict(map(lambda x: (int(x['pos']), x), c.playlistid()))
+    playlist_songs_by_pos = dict(map(
+        lambda x: (int(x['pos']), x),
+        c.playlistid()
+    ))
     current_song_no = int(c.status()['song'])
 
     main_print(main, "removing:")
