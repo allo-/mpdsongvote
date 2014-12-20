@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from mpd import MPDClient
-from urllib import quote, unquote
+from urllib import quote_plus, unquote_plus
 from django.db import models
 from models import *
 
@@ -28,7 +28,7 @@ def playlist(request):
             song['votes'] = votes[song['file']]
         else:
             song['votes'] = 0
-        song['quoted_filename'] = quote(song['file']).replace("/", "%2F")
+        song['quoted_filename'] = quote_plus(song['file']).replace("/", "%2F")
     current_songid = c.status()['songid']
     c.disconnect()
     return render(request, 'playlist.html', {
@@ -106,7 +106,7 @@ def album_songs(request, album):
 def playlist_vote(request, quoted_filename, up):
     c = MPDClient()
     c.connect("localhost", 6600)
-    filename = unquote(quoted_filename)
+    filename = unquote_plus(quoted_filename)
     pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
     if pi_created:
         pi.save()
