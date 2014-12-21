@@ -119,7 +119,7 @@ def playlist_vote(request, up):
     c = MPDClient()
     c.connect("localhost", 6600)
     pl = c.playlistid()
-    tracks = filter(lambda x: x['file'] == filename, pl)
+    tracks = c.playlistfind("file", filename)
 
     # track not in playlist
     if not len(tracks):
@@ -162,6 +162,7 @@ def playlist_vote(request, up):
             if votes.get(filename, 0) + MIN_MOVE_DIFFERENCE \
                <= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos
+                    break
 
     if movepos is not None:
         c.moveid(songid, movepos)
