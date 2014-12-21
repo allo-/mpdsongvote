@@ -27,6 +27,10 @@ def update_playlist(main=False):
     main_print(main, "removing:")
     for i in xrange(current_song_no):
         filename = playlist_songs_by_pos[i]['file']
+        title = playlist_songs_by_pos[i]['title']
+        artist = playlist_songs_by_pos[i]['artist']
+        models.PlayedSong(
+            title=title, artist=artist, filename=filename).save()
         main_print(main, filename)
         c.delete(0)
         models.PlaylistItem.objects.filter(filename=filename).delete()

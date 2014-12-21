@@ -16,6 +16,15 @@ class PlaylistVote(models.Model):
         return "PlaylistVote<file={0}, value={1}>".format(
             self.playlistitem.filename, self.value)
 
+class PlayedSong(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255)
+    artist = models.CharField(max_length=255)
+    filename = models.CharField(max_length=2048)
+
+    def __unicode__(self):
+        return "PlayedSong<{0}, {1}>".format(self.artist, self.title)
+
 FIELD_TYPES = (
     ("file", "filename"),
     ("title", "title"),

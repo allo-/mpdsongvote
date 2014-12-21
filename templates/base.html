@@ -57,19 +57,11 @@ Released   : 20131014
 			<div id="box1">
 				<h2>Recently played</h2>
 				<ul class="style1">
-					<li class="first"><a href="#">song 1</a></li>
-					<li><a href="#">song 2</a></li>
+                    {% for rp in recently_played %}
+                    <li class="{% if forloop.first %}first{% endif %}"><a href="#">{{ rp.artist }} - {{ rp.title }}</a></li>
+                    {% endfor %}
 				</ul>
 				<a href="#" class="button">more</a> </div>
-			<!--<div id="box2">
-				<h2>Nulla luctus</h2>
-				<ul class="style1">
-					<li class="first"><a href="#">Vestibulum luctus venenatis dui</a></li>
-					<li><a href="#">Aenean elementum facilisis ligula</a></li>
-					<li><a href="#">Ut tincidunt elit vitae augue</a></li>
-					<li><a href="#">Aenean elementum facilisis ligula</a></li>
-				</ul>
-                <a href="#" class="button">Read More</a> </div>-->
 		</div>
 		<div id="content">
             {% if messages %}
