@@ -14,16 +14,26 @@ ul.style2 h3 {
 input.votebutton {
     background-color: #308576;
     color: white;
-    border: none;
+    border: thin solid #308576;
+    padding: 0.2em;
 }
 
-div.votecount {
+div.votecount, span.votecount {
+    border-radius: 1em;
     border: thin solid black;
     text-align: center;
     margin: 0;
-    padding: 0 0.2em;
+    padding: 0.2em;
 }
 
 table.playlist td {
     max-width: 450px;
+}
+
+ul.songlist {
+    list-style: none
+}
+
+ul.songlist li {
+    margin: 0.2em 0;
 }

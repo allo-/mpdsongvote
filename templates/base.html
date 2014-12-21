@@ -58,7 +58,13 @@ Released   : 20131014
 				<h2>Recently played</h2>
 				<ul class="style1">
                     {% for rp in recently_played %}
-                    <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}"><a href="#">{{ rp.artist }} - {{ rp.title }}</a></li>
+                    <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
+                        {{ rp.artist }} - {{ rp.title }}
+                        <p style="margin: 0;height: 0.5em" />
+                        {% with buttontext="request again" filename=rp.filename votes=rp.votes %}
+                            {% include "snippets/requestbutton.html" %}
+                        {% endwith %}
+                    </li>
                     {% endfor %}
 				</ul>
 				<a href="#" class="button">more</a> </div>

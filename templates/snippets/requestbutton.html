@@ -1,0 +1,6 @@
+<form action="{% url "request_song" %}?from={{ request.path|iriencode }}" style="display: inline" method="post">
+    {% csrf_token %}
+    <span class="votecount">{% if votes %}{{ votes }}{% else %}0{% endif %}</span>
+    <input type="submit" value="{{ buttontext }}" class="votebutton" />
+    <input type="hidden" name="filename" value="{{ filename }}" />
+</form>

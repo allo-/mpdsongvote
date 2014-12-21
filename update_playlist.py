@@ -4,7 +4,7 @@ import mpd
 from mpdsongvote import models
 
 
-PLAYLIST_LENGTH = 100  # desired playlist length after removing/adding songs
+PLAYLIST_LENGTH = 5  # desired playlist length after removing/adding songs
 
 
 def main_print(main, args):

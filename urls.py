@@ -18,5 +18,7 @@ urlpatterns = patterns('',
     url(r'^playlist/vote/down/$', playlist_vote,
         {'up': False}, name="playlist_vote_down"),
 
+    url(r'^request/$', request_song, name="request_song"),
+
     url(r'^$', playlist, name="playlist"),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

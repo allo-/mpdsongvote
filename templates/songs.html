@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>{{ album }}</h2>
+<ul class="songlist">
 {% for song in songs %}
-<li>{% if song.track %}{{ song.track }}{% else %}{{ forloop.counter}}{% endif %}: {% if not artist and song.artist %}{{ song.artist}} - {% endif %}{{ song.title }}</li>
+<li>
+    {% with buttontext="request" filename=song.file votes=song.votes %}
+        {% include "snippets/requestbutton.html" %}
+    {% endwith %}
+    {% if song.track %}{{ song.track }}{% else %}{{ forloop.counter}}{% endif %}: {% if not artist and song.artist %}{{ song.artist}} - {% endif %}{{ song.title }}
+</li>
 {% endfor %}
 </ul>
 {% endblock %}

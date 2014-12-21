@@ -25,6 +25,21 @@ class PlayedSong(models.Model):
     def __unicode__(self):
         return "PlayedSong<{0}, {1}>".format(self.artist, self.title)
 
+class SongRequest(models.Model):
+    filename = models.CharField(max_length=2048, unique=True)
+
+    def __unicode__(self):
+        return "SongRequest<filename={0}>".format(self.filename)
+
+
+class SongRequestVote(models.Model):
+    songrequest = models.ForeignKey(SongRequest)
+    value = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return "SongRequest<file={0}, value={1}>".format(
+            self.songrequest.filename, self.value)
+
 FIELD_TYPES = (
     ("file", "filename"),
     ("title", "title"),

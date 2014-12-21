@@ -5,17 +5,12 @@ from django.db import models
 from django.contrib import messages
 from models import *
 from forms import *
+from util import *
 from update_playlist import update_playlist
 
 
 # minimum vote difference for a song to be moved up/down
 MIN_MOVE_DIFFERENCE = 2
-
-
-def _get_votes():
-    playlistitems = PlaylistItem.objects.all().annotate(
-        votes=models.Sum('playlistvote__value')).values()
-    return dict([(x['filename'], x['votes']) for x in playlistitems])
 
 
 def playlist(request):
@@ -24,7 +19,7 @@ def playlist(request):
     update_playlist(client=c)
     playlist = c.playlistid()
 
-    votes = _get_votes()
+    votes = get_votes()
 
     for song in playlist:
         if song['file'] in votes:
@@ -84,6 +79,7 @@ def artist_album_songs(request, artist, album):
     c.connect("localhost", 6600)
     songs = filter(lambda x: x.get('album', None) == album,
                    c.find("artist", artist))
+    add_num_requests_to_songlist(songs)
     c.disconnect()
     return render(request, 'songs.html', {
         'page': 'artist_album_songs',
@@ -97,13 +93,14 @@ def album_songs(request, album):
     c = MPDClient()
     c.connect("localhost", 6600)
     songs = filter(lambda x: x.get('title', None), c.find("album", album))
+    add_num_requests_to_songlist(songs)
+    print songs[0]
     c.disconnect()
     return render(request, 'songs.html', {
         'page': 'album_songs',
         'album': album,
         'songs': songs
     })
-
 
 def playlist_vote(request, up):
     c = MPDClient()
@@ -121,21 +118,18 @@ def playlist_vote(request, up):
     filename = form.cleaned_data['filename']
 
     pl = c.playlistid()
-    tracks = c.playlistfind("file", filename)
+    track = get_track(filename, in_playlist=True, client=c)
 
     # track not in playlist
-    if not len(tracks):
+    if not track:
         return redirect(reverse(playlist))
-    elif len(tracks) > 1:
-        # TODO: remove all but the first one from playlist
-        pass
-    track = tracks[0]
 
     pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
     if pi_created:
         pi.save()
     pv = PlaylistVote(playlistitem=pi, value=+1 if up else -1)
     pv.save()
+
     if up:
         voted_text = "Voted up: {artist} - {title}"
     else:
@@ -148,7 +142,7 @@ def playlist_vote(request, up):
         )
     )
 
-    votes = _get_votes()
+    votes = get_votes()
     songid = int(track['id'])
     pos = int(track['pos'])
     movepos = None
@@ -181,3 +175,36 @@ def playlist_vote(request, up):
 
     c.disconnect()
     return redirect(reverse(playlist))
+
+def request_song(request):
+    c = MPDClient()
+    c.connect("localhost", 6600)
+    form = RequestSongForm(request.POST or None)
+    if not form.is_valid():
+        for error in form.errors:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Error: {0}".format(form.errors[error][0])
+            )
+    else:
+        filename = form.cleaned_data['filename']
+        track = get_track(filename, in_playlist=False)
+        if not track:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Error: Cannot find song."
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.INFO,
+                "Requested: {artist} - {title}".format(
+                    artist=track['artist'], title=track['title'])
+            )
+            sr, created = SongRequest.objects.get_or_create(filename=filename)
+            if created:
+                sr.save()
+            SongRequestVote(songrequest=sr, value=+1).save()
+    return redirect(request.GET.get("from", "/"))
