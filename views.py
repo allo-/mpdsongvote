@@ -105,7 +105,10 @@ def album_songs(request, album):
 
 
 def playlist_vote(request, up):
-    update_playlist()
+    c = MPDClient()
+    c.connect("localhost", 6600)
+    update_playlist(client=c)
+
     form = PlaylistVoteForm(request.POST or None)
     if not form.is_valid():
         for error in form.errors:
@@ -116,8 +119,6 @@ def playlist_vote(request, up):
         return redirect(reverse(playlist))
     filename = form.cleaned_data['filename']
 
-    c = MPDClient()
-    c.connect("localhost", 6600)
     pl = c.playlistid()
     tracks = c.playlistfind("file", filename)
 

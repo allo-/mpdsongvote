@@ -12,9 +12,12 @@ def main_print(main, args):
         print args
 
 
-def update_playlist(main=False):
-    c = mpd.MPDClient()
-    c.connect("localhost", 6600)
+def update_playlist(main=False, client=None):
+    if client:
+        c = client
+    else:
+        c = mpd.MPDClient()
+        c.connect("localhost", 6600)
 
     # 1) remove played songs from the beginning
     playlist_songs_by_pos = dict(map(
@@ -58,7 +61,8 @@ def update_playlist(main=False):
         main_print(main, thefile)
         c.add(thefile)
 
-    c.disconnect()
+    if not client:
+        c.disconnect()
 
 if __name__ == "__main__":
     import django
