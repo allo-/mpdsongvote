@@ -21,6 +21,7 @@ def _get_votes():
 def playlist(request):
     c = MPDClient()
     c.connect("localhost", 6600)
+    update_playlist(client=c)
     playlist = c.playlistid()
 
     votes = _get_votes()
