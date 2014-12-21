@@ -23,9 +23,10 @@ def update_playlist(main=False):
     ))
     current_song_no = int(c.status()['song'])
 
+    main_print(main, "")
     main_print(main, "removing:")
     for i in xrange(current_song_no):
-        filename = playlist_songs_by_pos[0]['file']
+        filename = playlist_songs_by_pos[i]['file']
         main_print(main, filename)
         c.delete(0)
         models.PlaylistItem.objects.filter(filename=filename).delete()
@@ -35,6 +36,16 @@ def update_playlist(main=False):
     all_songs = dict(map(lambda x: (x['file'], x), c.search("file", "")))
 
     new_files = list(set(all_songs).difference(playlist_songs))
+
+    # copy, so we can modify new_files in the exclude loop
+    new_files2 = [nf for nf in new_files]
+    # filter files from exclude criteria
+    for exclude in models.Exclude.objects.all():
+        for nf in new_files2:
+            if exclude.value in all_songs[nf][exclude.field]:
+                new_files.remove(nf)
+
+    # limit playlist size
     new_files = new_files[0:max(0, PLAYLIST_LENGTH - len(playlist_songs))]
     random.shuffle(new_files)
 

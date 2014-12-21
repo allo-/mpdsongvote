@@ -15,3 +15,13 @@ class PlaylistVote(models.Model):
     def __unicode__(self):
         return "PlaylistVote<file={0}, value={1}>".format(
             self.playlistitem.filename, self.value)
+
+FIELD_TYPES = (
+    ("file", "filename"),
+    ("title", "title"),
+    ("artist", "artist"),
+)
+
+class Exclude(models.Model):
+    field = models.CharField(max_length=20, choices=FIELD_TYPES, default=0)
+    value = models.CharField(max_length=2048, unique=True)
