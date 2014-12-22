@@ -31,8 +31,8 @@ def update_playlist(main=False, client=None):
     main_print(main, "removing:")
     for i in xrange(current_song_no):
         filename = playlist_songs_by_pos[i]['file']
-        title = playlist_songs_by_pos[i]['title']
-        artist = playlist_songs_by_pos[i]['artist']
+        title = playlist_songs_by_pos[i].get('title', 'unknown title')
+        artist = playlist_songs_by_pos[i].get('artist', '')
         PlayedSong(
             title=title, artist=artist, filename=filename).save()
         main_print(main, filename)
@@ -56,7 +56,7 @@ def update_playlist(main=False, client=None):
     for exclude in Exclude.objects.all():
         for i in xrange(len(random_files)):
             exclude_value = exclude.value.lower()
-            song_value = all_songs_dict[random_files[i]][exclude.field].lower()
+            song_value = all_songs_dict[random_files[i]].get(exclude.field, '').lower()
             if exclude_value in song_value:
                 files_to_remove.append(random_files[i])
     random_files = list(set(random_files).difference(files_to_remove))
