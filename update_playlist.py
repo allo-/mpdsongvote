@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 import random
 import mpd
-from mpdsongvote import models
+from mpdsongvote.models import *
+from django.db import models
 
 
-PLAYLIST_LENGTH = 5  # desired playlist length after removing/adding songs
+PLAYLIST_LENGTH = 100  # desired playlist length after removing/adding songs
 
 
 def main_print(main, args):
@@ -32,29 +33,58 @@ def update_playlist(main=False, client=None):
         filename = playlist_songs_by_pos[i]['file']
         title = playlist_songs_by_pos[i]['title']
         artist = playlist_songs_by_pos[i]['artist']
-        models.PlayedSong(
+        PlayedSong(
             title=title, artist=artist, filename=filename).save()
         main_print(main, filename)
         c.delete(0)
-        models.PlaylistItem.objects.filter(filename=filename).delete()
+        PlaylistItem.objects.filter(filename=filename).delete()
 
     # 2) add new songs at the bottom
     playlist_songs = dict(map(lambda x: (x['file'], x), c.playlistid()))
-    all_songs = dict(map(lambda x: (x['file'], x), c.search("file", "")))
+    all_songs_dict = dict(map(
+        lambda x: (x['file'], x),
+        c.search("file", "")
+    ))
 
-    new_files = list(set(all_songs).difference(playlist_songs))
+    # generate a list of random files, which are not in the playlist
+    # or request list
+    random_files = list(set(all_songs_dict).difference(playlist_songs))
+    random.shuffle(random_files)
 
-    # copy, so we can modify new_files in the exclude loop
-    new_files2 = [nf for nf in new_files]
     # filter files from exclude criteria
-    for exclude in models.Exclude.objects.all():
-        for nf in new_files2:
-            if exclude.value in all_songs[nf][exclude.field]:
-                new_files.remove(nf)
+    files_to_remove = []
+    for exclude in Exclude.objects.all():
+        for i in xrange(len(random_files)):
+            exclude_value = exclude.value.lower()
+            song_value = all_songs_dict[random_files[i]][exclude.field].lower()
+            if exclude_value in song_value:
+                files_to_remove.append(random_files[i])
+    random_files = list(set(random_files).difference(files_to_remove))
 
-    # limit playlist size
+    # get requested files, but only until the playlist has PLAYLIST_LENGTH
+    requests = SongRequest.objects.all().annotate(
+        votes=models.Sum("songrequestvote__value")
+    )[:max(0, PLAYLIST_LENGTH - len(playlist_songs))]
+
+    # build a list of requested files ordered by the number of votes
+    request_votes = [
+        (x['filename'], x['votes'])
+        for x in requests.values("filename", "votes")
+    ]
+    requested_files = map(
+        lambda x: x[0],
+        sorted(request_votes, key=lambda x: x[1], reverse=True)
+    )
+
+    # remove added requests
+    for request in requests:
+        request.delete()
+
+    # final list of new files: requested_files + random_files
+    random_files = list(set(random_files).difference(requested_files))
+    new_files = requested_files + random_files
+    # limit to PLAYLIST_LENGTH
     new_files = new_files[0:max(0, PLAYLIST_LENGTH - len(playlist_songs))]
-    random.shuffle(new_files)
 
     main_print(main, "adding:")
     for thefile in new_files:
