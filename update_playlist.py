@@ -89,6 +89,8 @@ def update_playlist(main=False, client=None):
     main_print(main, "adding:")
     for thefile in new_files:
         main_print(main, thefile)
+        # clear votes by removing any existing PlaylistItems
+        PlaylistItem.objects.filter("filename"=thefile).delete()
         c.add(thefile)
 
     if not client:
