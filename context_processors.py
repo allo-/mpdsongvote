@@ -24,15 +24,27 @@ def recently_requested(request):
     }
 
 
+def most_wanted(request):
+    sr = SongRequest.objects.annotate(
+        votes=models.Sum("songrequestvote__value")
+    ).order_by("-votes")[:NUM_RECENTLY_REQUESTED].values()
+    add_num_requests_to_songlist(sr)
+    return {
+        'most_wanted': sr
+    }
+
+
 def mpdsongvote(request):
     items = {}
+    context_processors = (
+        recently_played,
+        recently_requested,
+        most_wanted
+    )
 
-    new_items = recently_played(request)
-    for item in new_items:
-        items[item] = new_items[item]
-
-    new_items = recently_requested(request)
-    for item in new_items:
-        items[item] = new_items[item]
+    for context_processor in context_processors:
+        new_items = context_processor(request)
+        for item in new_items:
+            items[item] = new_items[item]
 
     return items

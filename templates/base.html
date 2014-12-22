@@ -81,19 +81,8 @@ Released   : 20131014
         {% endblock %}
 		</div>
 		<div id="sidebar2">
-        <div>
-            <h2>Currently most wanted</h2>
-            <ul class="style2">
-                <li class="first">
-                    <h3><a href="#">song 3</a></h3>
-                    <p><a href="#">artist</a></p>
-                </li>
-                <li>
-                    <h3><a href="#">song 4</a></h3>
-                    <p><a href="#">artist</a></p>
-                </li>
-            <a href="#" class="button">more</a> </div>
-            <p />
+            {% if recently_requested %}
+            <div>
             <h2>Recently requested</h2>
             <ul class="style1">
                 {% for rp in recently_requested %}
@@ -106,7 +95,26 @@ Released   : 20131014
                 </li>
                 {% endfor %}
             </ul>
-            <a href="#" class="button">more</a> </div>
+            <!-- <a href="#" class="button">more</a> -->
+            </div>
+            {% endif %}
+            {% if most_wanted %}
+            <p />
+            <div>
+            <h2>Currently most wanted</h2>
+            <ul class="style1">
+                {% for rp in most_wanted %}
+                <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
+                    {{ rp.artist }} - {{ rp.title }}
+                    <p style="margin: 0;height: 0.5em" />
+                    {% with buttontext="request" filename=rp.filename votes=rp.votes %}
+                        {% include "snippets/requestbutton.html" %}
+                    {% endwith %}
+                </li>
+                {% endfor %}
+                <!--<a href="#" class="button">more</a> -->
+            </div>
+            {% endif %}
 		</div>
 	</div>
 </div>
