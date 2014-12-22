@@ -11,6 +11,8 @@ from update_playlist import update_playlist
 
 # minimum vote difference for a song to be moved up/down
 MIN_MOVE_DIFFERENCE = 1
+# remove song from the playlist, if thevotes are less or equal than this value
+REMOVE_FROM_PLAYLIST_VOTES = -2
 
 
 def playlist(request):
@@ -142,19 +144,32 @@ def playlist_vote(request, up):
     )
 
     votes = get_votes()
+    song_votes = votes.get(filename, 0)
     songid = int(track['id'])
     pos = int(track['pos'])
     movepos = None
-    if up:
+
+    # remove, if there are enough negative votes
+    if song_votes <= REMOVE_FROM_PLAYLIST_VOTES:
+        c.delete(pos)
+        update_playlist(client=c)
+        remove_text = "removed: {artist} - {title}"
+        messages.add_message(
+            request, messages.INFO, remove_text.format(
+                artist=track.get("artist", "unknown artist"),
+                title=track.get("title", "unknown title")
+            )
+        )
+    elif up:
         # pos -1 .. 1 (never move before the first (playing) song)
         for plpos in xrange(pos-1, 0, -1):
-            if votes.get(filename, 0) - MIN_MOVE_DIFFERENCE \
+            if song_votes - MIN_MOVE_DIFFERENCE \
                >= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos
     else:
         # pos+1 .. end
         for plpos in xrange(pos+1, len(pl)):
-            if votes.get(filename, 0) + MIN_MOVE_DIFFERENCE \
+            if song_votes + MIN_MOVE_DIFFERENCE \
                <= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos
                     break
