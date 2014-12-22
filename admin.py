@@ -1,4 +1,5 @@
 from django.contrib import admin
+import django.db.models
 import models
 
 
@@ -12,6 +13,13 @@ def songrequest_filename(songrequestvote):
 songrequest_filename.short_description = "filename"
 
 
+def songrequest_votes(songrequest):
+    return models.SongRequestVote.objects.filter(
+        songrequest=songrequest).aggregate(
+        votes=django.db.models.Sum("value"))['votes']
+songrequest_votes.short_description = "votes"
+
+
 class PlaylistItemAdmin(admin.ModelAdmin):
     list_display = ("filename", )
 
@@ -21,7 +29,7 @@ class PlaylistVoteAdmin(admin.ModelAdmin):
 
 
 class SongRequestAdmin(admin.ModelAdmin):
-    list_display = ("filename", )
+    list_display = ("filename", songrequest_votes)
 
 
 class SongRequestVoteAdmin(admin.ModelAdmin):
