@@ -8,6 +8,7 @@
         <td style="{% if song.id == current_songid %}font-weight: bold{% endif %}">
             {{ song.artist }} - {{ song.title }}
         </td>
+        {% if not forloop.first %}
         <td style="padding: 0">
             <div class="votecount">{{ song.votes }}</div>
         </td>
@@ -25,6 +26,11 @@
                 <input type="submit" value="⇩" class="votebutton" />
             </form>
         </td>
+        {% else %}
+        <td></td>
+        <td></td>
+        <td></td>
+        {% endif %}
     </tr>
 {% endfor %}
 </table>
