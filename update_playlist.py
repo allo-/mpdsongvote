@@ -5,7 +5,7 @@ from mpdsongvote.models import *
 from django.db import models
 
 
-PLAYLIST_LENGTH = 100  # desired playlist length after removing/adding songs
+PLAYLIST_LENGTH = 20  # desired playlist length after removing/adding songs
 
 
 def main_print(main, args):
@@ -55,7 +55,10 @@ def update_playlist(main=False, client=None):
     for exclude in Exclude.objects.all():
         for i in xrange(len(random_files)):
             exclude_value = exclude.value.lower()
-            song_value = all_songs_dict[random_files[i]].get(exclude.field, '').lower()
+            song_value = unicode(
+                all_songs_dict[random_files[i]].get(exclude.field, '').lower(),
+                "utf-8", errors="ignore"
+            )
             if exclude_value in song_value:
                 files_to_remove.append(random_files[i])
     random_files = list(set(random_files).difference(files_to_remove))
