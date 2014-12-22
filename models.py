@@ -26,7 +26,10 @@ class PlayedSong(models.Model):
         return "PlayedSong<{0}, {1}>".format(self.artist, self.title)
 
 class SongRequest(models.Model):
+    date = models.DateTimeField(auto_now=True)
     filename = models.CharField(max_length=2048, unique=True)
+    title = models.CharField(max_length=255)
+    artist = models.CharField(max_length=255)
 
     def __unicode__(self):
         return "SongRequest<filename={0}>".format(self.filename)

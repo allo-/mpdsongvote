@@ -29,7 +29,8 @@ class PlaylistVoteAdmin(admin.ModelAdmin):
 
 
 class SongRequestAdmin(admin.ModelAdmin):
-    list_display = ("filename", songrequest_votes)
+    readonly_fields = ("date",)
+    list_display = ("filename", songrequest_votes, "date")
 
 
 class SongRequestVoteAdmin(admin.ModelAdmin):

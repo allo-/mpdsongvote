@@ -4,6 +4,7 @@ from django.db import models
 
 
 NUM_RECENTLY_PLAYED = 5
+NUM_RECENTLY_REQUESTED = 5
 
 
 def recently_played(request):
@@ -15,10 +16,23 @@ def recently_played(request):
     }
 
 
+def recently_requested(request):
+    sr = SongRequest.objects.order_by("-date")[:NUM_RECENTLY_REQUESTED].values()
+    add_num_requests_to_songlist(sr)
+    return {
+        'recently_requested': sr
+    }
+
+
 def mpdsongvote(request):
     items = {}
 
     new_items = recently_played(request)
     for item in new_items:
         items[item] = new_items[item]
+
+    new_items = recently_requested(request)
+    for item in new_items:
+        items[item] = new_items[item]
+
     return items

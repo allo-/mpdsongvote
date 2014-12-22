@@ -95,19 +95,17 @@ Released   : 20131014
             <a href="#" class="button">more</a> </div>
             <p />
             <h2>Recently requested</h2>
-            <ul class="style2">
-                <li class="first">
-                    <h3><a href="#">song 5</a></h3>
-                    <p><a href="#">artist</a></p>
+            <ul class="style1">
+                {% for rp in recently_requested %}
+                <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
+                    {{ rp.artist }} - {{ rp.title }}
+                    <p style="margin: 0;height: 0.5em" />
+                    {% with buttontext="request" filename=rp.filename votes=rp.votes %}
+                        {% include "snippets/requestbutton.html" %}
+                    {% endwith %}
                 </li>
-                <li>
-                    <h3><a href="#">song 6</a></h3>
-                    <p><a href="#">artist</a></p>
-                </li>
-                <li>
-                    <h3><a href="#">song 7</a></h3>
-                    <p><a href="#">artist</a></p>
-                </li>
+                {% endfor %}
+            </ul>
             <a href="#" class="button">more</a> </div>
 		</div>
 	</div>

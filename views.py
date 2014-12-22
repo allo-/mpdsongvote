@@ -205,6 +205,8 @@ def request_song(request):
             )
             sr, created = SongRequest.objects.get_or_create(filename=filename)
             if created:
-                sr.save()
+                sr.artist = track.get('artist', 'unknown artist')
+                sr.title = track.get('title', 'unknown title')
+            sr.save()  # safe SongRequest anyway to update timestamp
             SongRequestVote(songrequest=sr, value=+1).save()
     return redirect(request.GET.get("from", "/"))
