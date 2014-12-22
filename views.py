@@ -94,7 +94,6 @@ def album_songs(request, album):
     c.connect("localhost", 6600)
     songs = filter(lambda x: x.get('title', None), c.find("album", album))
     add_num_requests_to_songlist(songs)
-    print songs[0]
     c.disconnect()
     return render(request, 'songs.html', {
         'page': 'album_songs',
