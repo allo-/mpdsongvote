@@ -172,7 +172,8 @@ def playlist_vote(request, up):
             if song_votes + MIN_MOVE_DIFFERENCE \
                <= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos
-                    break
+            else:
+                break
 
     if movepos is not None:
         c.moveid(songid, movepos)
