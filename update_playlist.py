@@ -49,7 +49,6 @@ def update_playlist(main=False, client=None):
     # generate a list of random files, which are not in the playlist
     # or request list
     random_files = list(set(all_songs_dict).difference(playlist_songs))
-    random.shuffle(random_files)
 
     # filter files from exclude criteria
     files_to_remove = []
@@ -82,6 +81,8 @@ def update_playlist(main=False, client=None):
 
     # final list of new files: requested_files + random_files
     random_files = list(set(random_files).difference(requested_files))
+    random.shuffle(random_files)
+
     new_files = requested_files + random_files
     # limit to PLAYLIST_LENGTH
     new_files = new_files[0:max(0, PLAYLIST_LENGTH - len(playlist_songs))]
