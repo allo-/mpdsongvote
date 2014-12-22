@@ -10,7 +10,7 @@ from update_playlist import update_playlist
 
 
 # minimum vote difference for a song to be moved up/down
-MIN_MOVE_DIFFERENCE = 2
+MIN_MOVE_DIFFERENCE = 1
 
 
 def playlist(request):
