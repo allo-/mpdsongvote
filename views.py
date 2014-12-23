@@ -28,7 +28,15 @@ def playlist(request):
         playlist[0]['cur_time'] = status['time'].split(":")[0]
 
     votes = get_votes()
+    favs = dict([
+        (x['filename'], x['favs']) for x in Song.objects.all().annotate(
+            favs=models.Count("songfav")
+        ).values("filename", "favs")])
     for song in playlist:
+        if song['file'] in favs:
+            song['favs'] = favs[song['file']]
+        else:
+            song['favs'] = 0
         if song['file'] in votes:
             song['votes'] = votes[song['file']]
         else:
@@ -112,6 +120,7 @@ def album_songs(request, album):
         'album': album,
         'songs': songs
     })
+
 
 def playlist_vote(request, up):
     c = MPDClient()
@@ -201,6 +210,7 @@ def playlist_vote(request, up):
     c.disconnect()
     return redirect(reverse(playlist))
 
+
 def request_song(request):
     c = MPDClient()
     c.connect("localhost", 6600)
@@ -234,4 +244,40 @@ def request_song(request):
                 sr.title = track.get('title', 'unknown title')
             sr.save()  # safe SongRequest anyway to update timestamp
             SongRequestVote(songrequest=sr, value=+1).save()
+    return redirect(request.GET.get("from", "/"))
+
+
+def fav_song(request):
+    c = MPDClient()
+    c.connect("localhost", 6600)
+    form = FavSongForm(request.POST or None)
+    if not form.is_valid():
+        for error in form.errors:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Error: {0}".format(form.errors[error][0])
+            )
+    else:
+        filename = form.cleaned_data['filename']
+        track = get_track(filename, in_playlist=False)
+        if not track:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                "Error: Cannot find song."
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.INFO,
+                "Faved: {artist} - {title}".format(
+                    artist=track['artist'], title=track['title'])
+            )
+            song, created = Song.objects.get_or_create(filename=filename)
+            if created:
+                song.artist = track.get('artist', 'unknown artist')
+                song.title = track.get('title', 'unknown title')
+            song.save()  # safe SongRequest anyway to update timestamp
+            SongFav(song=song).save()
     return redirect(request.GET.get("from", "/"))

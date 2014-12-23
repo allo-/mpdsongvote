@@ -25,6 +25,21 @@ class PlayedSong(models.Model):
     def __unicode__(self):
         return "PlayedSong<{0}, {1}>".format(self.artist, self.title)
 
+class Song(models.Model):
+    filename = models.CharField(max_length=2048)
+    title = models.CharField(max_length=255)
+    artist = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return "Song<{0}>".format(self.filename)
+
+class SongFav(models.Model):
+    song = models.ForeignKey(Song)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return "SongFav<{0}>".format(self.song.filename)
+
 class SongRequest(models.Model):
     date = models.DateTimeField(auto_now=True)
     filename = models.CharField(max_length=2048, unique=True)

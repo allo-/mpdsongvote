@@ -42,10 +42,26 @@
                 <input type="submit" value="⇩" class="votebutton" />
             </form>
         </td>
+        <td>
+            <input type="submit" value="☆ {{ song.favs }}" class="votebutton disabled" />
+        </td>
         {% else %}
-        <td></td>
-        <td></td>
-        <td></td>
+        <td style="padding: 0">
+            <div class="votecount">{{ song.votes }}</div>
+        </td>
+        <td>
+            <input type="submit" value="⇧" class="votebutton disabled" />
+        </td>
+        <td>
+            <input type="submit" value="⇩" class="votebutton disabled" />
+        </td>
+        <td>
+            <form action="{% url 'fav_song' %}?from={{ request.path|iriencode }}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="filename" value="{{ song.file }}" />
+                <input type="submit" value="☆ {{ song.favs }}" class="votebutton" />
+            </form>
+        </td>
         {% endif %}
     </tr>
 {% endfor %}

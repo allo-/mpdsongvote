@@ -12,10 +12,18 @@ ul.style2 h3 {
 }
 
 input.votebutton {
+    cursor: pointer;
     background-color: #308576;
     color: white;
     border: thin solid #308576;
     padding: 0.2em;
+}
+
+input.votebutton.disabled {
+    cursor: default;
+    background-color: white;
+    color: black;
+    border: thin solid #308576;
 }
 
 div.votecount, span.votecount {

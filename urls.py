@@ -17,6 +17,7 @@ urlpatterns = patterns('',
         {'up': True}, name="playlist_vote_up"),
     url(r'^playlist/vote/down/$', playlist_vote,
         {'up': False}, name="playlist_vote_down"),
+    url(r'^fav/$', fav_song, name="fav_song"),
 
     url(r'^request/$', request_song, name="request_song"),
 

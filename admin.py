@@ -13,6 +13,11 @@ def songrequest_filename(songrequestvote):
 songrequest_filename.short_description = "filename"
 
 
+def songfav_filename(songfav):
+    return songfav.song.filename
+songrequest_filename.short_description = "filename"
+
+
 def songrequest_votes(songrequest):
     return models.SongRequestVote.objects.filter(
         songrequest=songrequest).aggregate(
@@ -45,8 +50,19 @@ class PlayedSongAdmin(admin.ModelAdmin):
     list_display = ("title", "artist", "filename")
 
 
+class SongAdmin(admin.ModelAdmin):
+    list_display = ("filename",)
+
+
+class SongFavAdmin(admin.ModelAdmin):
+    list_display = (songfav_filename, "date")
+
+
 admin.site.register(models.PlaylistItem, PlaylistItemAdmin)
 admin.site.register(models.PlaylistVote, PlaylistVoteAdmin)
+
+admin.site.register(models.Song, SongAdmin)
+admin.site.register(models.SongFav, SongFavAdmin)
 
 admin.site.register(models.SongRequest, SongRequestAdmin)
 admin.site.register(models.SongRequestVote, SongRequestVoteAdmin)
