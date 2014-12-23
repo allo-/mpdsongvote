@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mpdsongvote_tags %}
 {% block content %}
 <h2>Playlist</h2>
 <table class="playlist">
@@ -6,7 +7,17 @@
     <tr>
         <td style="text-align: right;padding-right: 0.5em">{{ song.pos|add:1 }}:</td>
         <td style="{% if song.id == current_songid %}font-weight: bold{% endif %}">
-            {{ song.artist }} - {{ song.title }}
+            {% with songlength=song.time|divmod:60 %}
+            {{ song.artist }} - {{ song.title }} ({% spaceless %}
+                {% if song.cur_time %}
+                    {% with cur_time=song.cur_time|divmod:60 %}
+                        {{ cur_time.0 }}:{{ cur_time.1|zfill:2 }}
+                        /
+                    {% endwith %}
+                {% endif %}
+                {{ songlength.0 }}:{{ songlength.1|zfill:2 }}
+            {% endspaceless %})
+            {% endwith %}
         </td>
         {% if not forloop.first %}
         <td style="padding: 0">

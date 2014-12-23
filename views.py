@@ -21,9 +21,13 @@ def playlist(request):
     c.connect("localhost", 6600)
     update_playlist(client=c)
     playlist = c.playlistid()
+    status = c.status()
+
+    # add position in current song
+    if len(playlist):
+        playlist[0]['cur_time'] = status['time'].split(":")[0]
 
     votes = get_votes()
-
     for song in playlist:
         if song['file'] in votes:
             song['votes'] = votes[song['file']]
@@ -34,7 +38,8 @@ def playlist(request):
     return render(request, 'playlist.html', {
         'page': 'playlist',
         'current_songid': current_songid,
-        'playlist': playlist
+        'playlist': playlist,
+        'status': status
     })
 
 
