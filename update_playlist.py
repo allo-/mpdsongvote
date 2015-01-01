@@ -33,11 +33,15 @@ def update_playlist(main=False, client=None):
         filename = playlist_songs_by_pos[i]['file']
         title = playlist_songs_by_pos[i].get('title', 'unknown title')
         artist = playlist_songs_by_pos[i].get('artist', '')
-        PlayedSong(
-            title=title, artist=artist, filename=filename).save()
+        song, created = Song.objects.get_or_create(filename=filename)
+        if created:
+            song.artist = artist
+            song.title = title
+            song.save()
+        PlayedSong(song=song).save()
         main_print(main, filename)
         c.delete(0)
-        PlaylistItem.objects.filter(filename=filename).delete()
+        PlaylistVote.objects.filter(song__filename=filename).delete()
 
     # 2) add new songs at the bottom
     playlist_songs = dict(map(lambda x: (x['file'], x), c.playlistid()))
@@ -70,8 +74,8 @@ def update_playlist(main=False, client=None):
 
     # build a list of requested files ordered by the number of votes
     request_votes = [
-        (x['filename'], x['votes'])
-        for x in requests.values("filename", "votes")
+        (x['song__filename'], x['votes'])
+        for x in requests.values("song__filename", "votes")
     ]
     requested_files = map(
         lambda x: x[0],
@@ -91,11 +95,11 @@ def update_playlist(main=False, client=None):
     new_files = new_files[0:max(0, PLAYLIST_LENGTH - len(playlist_songs))]
 
     main_print(main, "adding:")
-    for thefile in new_files:
-        main_print(main, thefile)
-        # clear votes by removing any existing PlaylistItems
-        PlaylistItem.objects.filter(filename=thefile).delete()
-        c.add(thefile)
+    for filename in new_files:
+        main_print(main, filename)
+        # clear votes
+        PlaylistVote.objects.filter(song__filename=filename).delete()
+        c.add(filename)
 
     if not client:
         c.disconnect()

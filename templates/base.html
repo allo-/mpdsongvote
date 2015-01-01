@@ -57,11 +57,11 @@ Released   : 20131014
 			<div id="box1">
 				<h2>Recently played</h2>
 				<ul class="style1">
-                    {% for rp in recently_played %}
-                    <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
-                        {{ rp.artist }} - {{ rp.title }}
+                    {% for recently_played_song in recently_played_songs %}
+                    <li class="{% if forloop.first %}first{% endif %}" title="{{ recently_played_song.date }}">
+                        {{ recently_played_song.song.artist }} - {{ recently_played_song.song.title }}
                         <p style="margin: 0;height: 0.5em" />
-                        {% with buttontext="request again" filename=rp.filename votes=rp.votes %}
+                        {% with buttontext="request again" filename=recently_played_song.song.filename votes=recently_played_song.votes %}
                             {% include "snippets/requestbutton.html" %}
                         {% endwith %}
                     </li>
@@ -81,15 +81,15 @@ Released   : 20131014
         {% endblock %}
 		</div>
 		<div id="sidebar2">
-            {% if recently_requested %}
+            {% if recent_song_requests %}
             <div>
             <h2>Recently requested</h2>
             <ul class="style1">
-                {% for rp in recently_requested %}
-                <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
-                    {{ rp.artist }} - {{ rp.title }}
+                {% for song_request in recent_song_requests %}
+                <li class="{% if forloop.first %}first{% endif %}" title="{{ song_request.date }}">
+                    {{ song_request.song.artist }} - {{ song_request.song.title }}
                     <p style="margin: 0;height: 0.5em" />
-                    {% with buttontext="request" filename=rp.filename votes=rp.votes %}
+                    {% with buttontext="request" filename=song_request.song.filename votes=song_request.votes %}
                         {% include "snippets/requestbutton.html" %}
                     {% endwith %}
                 </li>
@@ -98,16 +98,16 @@ Released   : 20131014
             <!-- <a href="#" class="button">more</a> -->
             </div>
             {% endif %}
-            {% if most_wanted %}
+            {% if most_wanted_song_requests %}
             <p />
             <div>
             <h2>Currently most wanted</h2>
             <ul class="style1">
-                {% for rp in most_wanted %}
-                <li class="{% if forloop.first %}first{% endif %}" title="{{ rp.date }}">
-                    {{ rp.artist }} - {{ rp.title }}
+                {% for song_request in most_wanted_song_requests %}
+                <li class="{% if forloop.first %}first{% endif %}" title="{{ song_request.date }}">
+                    {{ song_request.song.artist }} - {{ song_request.song.title }}
                     <p style="margin: 0;height: 0.5em" />
-                    {% with buttontext="request" filename=rp.filename votes=rp.votes %}
+                    {% with buttontext="request" filename=song_request.song.filename votes=song_request.votes %}
                         {% include "snippets/requestbutton.html" %}
                     {% endwith %}
                 </li>

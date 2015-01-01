@@ -144,10 +144,12 @@ def playlist_vote(request, up):
     if not track:
         return redirect(reverse(playlist))
 
-    pi, pi_created = PlaylistItem.objects.get_or_create(filename=filename)
-    if pi_created:
-        pi.save()
-    pv = PlaylistVote(playlistitem=pi, value=+1 if up else -1)
+    song_obj, created = Song.objects.get_or_create(filename=filename)
+    if created:
+        song_obj.artist = track['artist']
+        song_obj.title = track['title']
+        song_obj.save()
+    pv = PlaylistVote(song=song_obj, value=+1 if up else -1)
     pv.save()
 
     if up:
@@ -238,10 +240,14 @@ def request_song(request):
                 "Requested: {artist} - {title}".format(
                     artist=track['artist'], title=track['title'])
             )
-            sr, created = SongRequest.objects.get_or_create(filename=filename)
+            song, created = Song.objects.get_or_create(filename=filename)
             if created:
-                sr.artist = track.get('artist', 'unknown artist')
-                sr.title = track.get('title', 'unknown title')
+                song.artist = track['artist']
+                song.title = track['title']
+                song.save()
+            sr, created = SongRequest.objects.get_or_create(
+                song=song,
+            )
             sr.save()  # safe SongRequest anyway to update timestamp
             SongRequestVote(songrequest=sr, value=+1).save()
     return redirect(request.GET.get("from", "/"))
@@ -274,10 +280,10 @@ def fav_song(request):
                 "Faved: {artist} - {title}".format(
                     artist=track['artist'], title=track['title'])
             )
-            song, created = Song.objects.get_or_create(filename=filename)
+            song_obj, created = Song.objects.get_or_create(filename=filename)
             if created:
-                song.artist = track.get('artist', 'unknown artist')
-                song.title = track.get('title', 'unknown title')
-            song.save()  # safe SongRequest anyway to update timestamp
-            SongFav(song=song).save()
+                song_obj.artist = track['artist']
+                song_obj.title = track['title']
+                song_obj.save()
+            SongFav(song=song_obj).save()
     return redirect(request.GET.get("from", "/"))

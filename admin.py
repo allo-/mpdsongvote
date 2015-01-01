@@ -3,19 +3,19 @@ import django.db.models
 import models
 
 
-def playlistitem_filename(playlistvote):
-    return playlistvote.playlistitem.filename
-playlistitem_filename.short_description = "filename"
+def song_filename(instance):
+    return instance.song.filename
+song_filename.short_description = "filename"
 
 
-def songrequest_filename(songrequestvote):
-    return songrequestvote.songrequest.filename
-songrequest_filename.short_description = "filename"
+def song_artist(instance):
+    return instance.song.filename
+song_artist.short_description = "artist"
 
 
-def songfav_filename(songfav):
-    return songfav.song.filename
-songrequest_filename.short_description = "filename"
+def song_title(instance):
+    return instance.song.title
+song_title.short_description = "title"
 
 
 def songrequest_votes(songrequest):
@@ -25,21 +25,17 @@ def songrequest_votes(songrequest):
 songrequest_votes.short_description = "votes"
 
 
-class PlaylistItemAdmin(admin.ModelAdmin):
-    list_display = ("filename", )
-
-
 class PlaylistVoteAdmin(admin.ModelAdmin):
-    list_display = (playlistitem_filename, "value")
+    list_display = (song_filename, "value")
 
 
 class SongRequestAdmin(admin.ModelAdmin):
     readonly_fields = ("date",)
-    list_display = ("filename", songrequest_votes, "date")
+    list_display = (song_filename, songrequest_votes, "date")
 
 
 class SongRequestVoteAdmin(admin.ModelAdmin):
-    list_display = (songrequest_filename, "value")
+    list_display = (song_filename, "value")
 
 
 class ExcludeAdmin(admin.ModelAdmin):
@@ -47,7 +43,7 @@ class ExcludeAdmin(admin.ModelAdmin):
 
 
 class PlayedSongAdmin(admin.ModelAdmin):
-    list_display = ("title", "artist", "filename")
+    list_display = (song_title, song_artist, song_filename, "date")
 
 
 class SongAdmin(admin.ModelAdmin):
@@ -55,10 +51,9 @@ class SongAdmin(admin.ModelAdmin):
 
 
 class SongFavAdmin(admin.ModelAdmin):
-    list_display = (songfav_filename, "date")
+    list_display = (song_filename, "date")
 
 
-admin.site.register(models.PlaylistItem, PlaylistItemAdmin)
 admin.site.register(models.PlaylistVote, PlaylistVoteAdmin)
 
 admin.site.register(models.Song, SongAdmin)
