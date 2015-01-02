@@ -23,7 +23,7 @@ def get_track(filename, in_playlist=True, client=None):
 
 def get_votes():
     songs = Song.objects.all().annotate(
-        votes=models.Sum('playlistvote__value'))
+        votes=models.Sum('playlistvote__value')).exclude(votes=None)
     return dict([(x.filename, x.votes) for x in songs])
 
 
