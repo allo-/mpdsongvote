@@ -49,7 +49,7 @@ class SongRequestVote(models.Model):
 
     def __unicode__(self):
         return "SongRequest<file={0}, value={1}>".format(
-            self.songrequest.filename, self.value)
+            self.songrequest.song.filename, self.value)
 
 FIELD_TYPES = (
     ("file", "filename"),
