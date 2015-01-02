@@ -2,6 +2,7 @@
 import random
 import mpd
 from mpdsongvote.models import *
+from mpdsongvote.util import *
 from django.db import models
 
 
@@ -33,11 +34,7 @@ def update_playlist(main=False, client=None):
         filename = playlist_songs_by_pos[i]['file']
         title = playlist_songs_by_pos[i].get('title', 'unknown title')
         artist = playlist_songs_by_pos[i].get('artist', '')
-        song, created = Song.objects.get_or_create(filename=filename)
-        if created:
-            song.artist = artist
-            song.title = title
-            song.save()
+        song = get_song(filename, artist, title)
         PlayedSong(song=song).save()
         main_print(main, filename)
         c.delete(0)

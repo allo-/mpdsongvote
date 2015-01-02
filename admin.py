@@ -25,6 +25,11 @@ def songrequest_votes(songrequest):
 songrequest_votes.short_description = "votes"
 
 
+def license_name(license):
+    return license.license.name
+license_name.short_description="license"
+
+
 class PlaylistVoteAdmin(admin.ModelAdmin):
     list_display = (song_filename, "value")
 
@@ -54,6 +59,14 @@ class SongFavAdmin(admin.ModelAdmin):
     list_display = (song_filename, "date")
 
 
+class LicenseAdmin(admin.ModelAdmin):
+    list_display = ("name", "short_name", "url")
+
+
+class AttributionAdmin(admin.ModelAdmin):
+    list_display = ("filename", "artist", license_name)
+
+
 admin.site.register(models.PlaylistVote, PlaylistVoteAdmin)
 
 admin.site.register(models.Song, SongAdmin)
@@ -64,3 +77,6 @@ admin.site.register(models.SongRequestVote, SongRequestVoteAdmin)
 
 admin.site.register(models.Exclude, ExcludeAdmin)
 admin.site.register(models.PlayedSong, PlayedSongAdmin)
+
+admin.site.register(models.License, LicenseAdmin)
+admin.site.register(models.Attribution, AttributionAdmin)

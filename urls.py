@@ -21,5 +21,7 @@ urlpatterns = patterns('',
 
     url(r'^request/$', request_song, name="request_song"),
 
+    url(r'^attribution/(?P<attribution_id>[0-9]*)/$', show_attribution, name="show_attribution"),
+
     url(r'^$', playlist, name="playlist"),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

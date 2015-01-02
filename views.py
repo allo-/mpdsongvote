@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from mpd import MPDClient
 from urllib import unquote
@@ -37,10 +37,14 @@ def playlist(request):
             song['favs'] = favs[song['file']]
         else:
             song['favs'] = 0
+
         if song['file'] in votes:
             song['votes'] = votes[song['file']]
         else:
             song['votes'] = 0
+
+        song['attribution'] = get_attribution(song['file'])
+
     current_songid = c.status()['songid']
     c.disconnect()
     return render(request, 'playlist.html', {
@@ -144,11 +148,7 @@ def playlist_vote(request, up):
     if not track:
         return redirect(reverse(playlist))
 
-    song_obj, created = Song.objects.get_or_create(filename=filename)
-    if created:
-        song_obj.artist = track['artist']
-        song_obj.title = track['title']
-        song_obj.save()
+    song_obj = get_song(filename, track['artist'], track['title'])
     pv = PlaylistVote(song=song_obj, value=+1 if up else -1)
     pv.save()
 
@@ -240,13 +240,9 @@ def request_song(request):
                 "Requested: {artist} - {title}".format(
                     artist=track['artist'], title=track['title'])
             )
-            song, created = Song.objects.get_or_create(filename=filename)
-            if created:
-                song.artist = track['artist']
-                song.title = track['title']
-                song.save()
+            song_obj = get_song(filename, track['artist'], track['title'])
             sr, created = SongRequest.objects.get_or_create(
-                song=song,
+                song=song_obj,
             )
             sr.save()  # safe SongRequest anyway to update timestamp
             SongRequestVote(songrequest=sr, value=+1).save()
@@ -280,10 +276,11 @@ def fav_song(request):
                 "Faved: {artist} - {title}".format(
                     artist=track['artist'], title=track['title'])
             )
-            song_obj, created = Song.objects.get_or_create(filename=filename)
-            if created:
-                song_obj.artist = track['artist']
-                song_obj.title = track['title']
-                song_obj.save()
+            song_obj = get_song(filename, track['artist'], track['title'])
             SongFav(song=song_obj).save()
     return redirect(request.GET.get("from", "/"))
+
+
+def show_attribution(request, attribution_id):
+    attribution = get_object_or_404(Attribution, id=int(attribution_id))
+    return render(request, "attribution.html", {'attribution': attribution})

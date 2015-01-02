@@ -27,6 +27,23 @@ def get_votes():
     return dict([(x.filename, x.votes) for x in songs])
 
 
+def get_attribution(filename):
+    for attribution in Attribution.objects.all():
+        if filename.startswith(attribution.filename):
+            return attribution
+    return None
+
+
+def get_song(filename, artist, title):
+    song_obj, created = Song.objects.get_or_create(filename=filename)
+    if created:
+        song_obj.artist = artist
+        song_obj.title = title
+        song_obj.attribution = get_attribution(filename)
+        song_obj.save()
+    return song_obj
+
+
 def add_num_requests_to_songlist(songlist):
     """
         add the number of requests to a list of dicts, containing

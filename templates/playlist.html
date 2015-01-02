@@ -11,7 +11,7 @@
             {% if playlist_song.title %}
                 {% if playlist_song.artist %}{{ playlist_song.artist }} - {% endif %}{{ playlist_song.title }}
             {% else %}
-                {{ playlist_songsong.file|title_from_filename }}
+                {{ playlist_song.file|title_from_filename }}
             {% endif %}
             ({% spaceless %}
                 {% if playlist_song.cur_time %}
@@ -24,10 +24,15 @@
             {% endspaceless %})
             {% endwith %}
         </td>
-        {% if not forloop.first %}
+        <td>
+            {% if playlist_song.attribution %}
+            <a href="{% url "show_attribution" playlist_song.attribution.id %}" title="{{ playlist_song.attribution.license.short_name }}">©</a>
+            {% endif %}
+        </td>
         <td style="padding: 0">
             <div class="votecount">{{ playlist_song.votes }}</div>
         </td>
+        {% if not forloop.first %}
         <td>
             <form action="{% url 'playlist_vote_up' %}" method="post">
                 {% csrf_token %}
@@ -46,9 +51,6 @@
             <input type="submit" value="☆ {{ playlist_song.favs }}" class="votebutton disabled" />
         </td>
         {% else %}
-        <td style="padding: 0">
-            <div class="votecount">{{ playlist_song.votes }}</div>
-        </td>
         <td>
             <input type="submit" value="⇧" class="votebutton disabled" />
         </td>

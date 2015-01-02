@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<ul>
+    <table id="attribution_table">
+        <tr>
+            <th>Song By:</th>
+            <td>
+                {% if attribution.url %}
+                    <a href="{{ attribution.url }}">{{ attribution.artist }}</a>
+                {% else %}
+                    {{ attribution.artist }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>License:</th>
+            <td>
+                {% if attribution.license.url %}
+                    <a href="{{ attribution.license.url }}">{{ attribution.license.name }}</a>
+                {% else %}
+                    {{ attribution.license.name }}
+                {% endif %}
+            </td>
+        </tr>
+        {% if attribution.license.short_name %}
+        <tr>
+            <th></th>
+            <td>({{ attribution.license.short_name }})</td>
+        </tr>
+        {% endif %}
+        {% if attribution.license.text %}
+        <tr>
+            <th style="padding-top: 1em">License Text:</th>
+            <td colspan="1" style="padding-top: 1em">
+                <pre>{{ attribution.license.text }}</pre>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</ul>
+{% endblock %}

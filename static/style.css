@@ -45,3 +45,13 @@ ul.songlist {
 ul.songlist li {
     margin: 0.2em 0;
 }
+
+#attribution_table th {
+    white-space: nowrap;
+    text-align: right;
+    vertical-align: top;
+}
+
+#attribution_table pre {
+    margin: 0
+}
