@@ -3,19 +3,19 @@
 {% block content %}
 <h2>Playlist</h2>
 <table class="playlist">
-{% for song in playlist %}
+{% for playlist_song in playlist %}
     <tr>
-        <td style="text-align: right;padding-right: 0.5em">{{ song.pos|add:1 }}:</td>
-        <td style="{% if song.id == current_songid %}font-weight: bold{% endif %}">
-            {% with songlength=song.time|divmod:60 %}
-            {% if song.title %}
-                {% if song.artist %}{{ song.artist }} - {% endif %}{{ song.title }}
+        <td style="text-align: right;padding-right: 0.5em">{{ playlist_song.pos|add:1 }}:</td>
+        <td style="{% if playlist_song.id == current_songid %}font-weight: bold{% endif %}">
+            {% with songlength=playlist_song.time|divmod:60 %}
+            {% if playlist_song.title %}
+                {% if playlist_song.artist %}{{ playlist_song.artist }} - {% endif %}{{ playlist_song.title }}
             {% else %}
-                {{ song.file|title_from_filename }}
+                {{ playlist_songsong.file|title_from_filename }}
             {% endif %}
             ({% spaceless %}
-                {% if song.cur_time %}
-                    {% with cur_time=song.cur_time|divmod:60 %}
+                {% if playlist_song.cur_time %}
+                    {% with cur_time=playlist_song.cur_time|divmod:60 %}
                         {{ cur_time.0 }}:{{ cur_time.1|zfill:2 }}
                         /
                     {% endwith %}
@@ -26,28 +26,28 @@
         </td>
         {% if not forloop.first %}
         <td style="padding: 0">
-            <div class="votecount">{{ song.votes }}</div>
+            <div class="votecount">{{ playlist_song.votes }}</div>
         </td>
         <td>
             <form action="{% url 'playlist_vote_up' %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="filename" value="{{ song.file }}" />
+                <input type="hidden" name="filename" value="{{ playlist_song.file }}" />
                 <input type="submit" value="⇧" class="votebutton" />
             </form>
         </td>
         <td>
             <form action="{% url 'playlist_vote_down' %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="filename" value="{{ song.file }}" />
+                <input type="hidden" name="filename" value="{{ playlist_song.file }}" />
                 <input type="submit" value="⇩" class="votebutton" />
             </form>
         </td>
         <td>
-            <input type="submit" value="☆ {{ song.favs }}" class="votebutton disabled" />
+            <input type="submit" value="☆ {{ playlist_song.favs }}" class="votebutton disabled" />
         </td>
         {% else %}
         <td style="padding: 0">
-            <div class="votecount">{{ song.votes }}</div>
+            <div class="votecount">{{ playlist_song.votes }}</div>
         </td>
         <td>
             <input type="submit" value="⇧" class="votebutton disabled" />
@@ -58,8 +58,8 @@
         <td>
             <form action="{% url 'fav_song' %}?from={{ request.path|iriencode }}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="filename" value="{{ song.file }}" />
-                <input type="submit" value="☆ {{ song.favs }}" class="votebutton" />
+                <input type="hidden" name="filename" value="{{ playlist_song.file }}" />
+                <input type="submit" value="☆ {{ playlist_song.favs }}" class="votebutton" />
             </form>
         </td>
         {% endif %}
