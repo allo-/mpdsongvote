@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from mpd import MPDClient
-from urllib import unquote
 from django.db import models
 from django.contrib import messages
 from models import *
@@ -78,13 +77,19 @@ def albums(request):
 
 
 def artist_albums(request, artist):
-    artist = unquote(artist)
     c = MPDClient()
     c.connect("localhost", 6600)
     albums = filter(
         lambda x: x,
         set(
-            map(lambda x: x.get('album', None), c.find("artist", artist))
+            map(
+                lambda x: unicode(
+                    x.get('album', None),
+                    "utf-8",
+                    errors="ignore"
+                ),
+                c.find("artist", artist)
+            )
         )
     )
     c.disconnect()
@@ -96,12 +101,16 @@ def artist_albums(request, artist):
 
 
 def artist_album_songs(request, artist, album):
-    artist = unquote(artist)
-    album = unquote(album)
     c = MPDClient()
     c.connect("localhost", 6600)
-    songs = filter(lambda x: x.get('album', None) == album,
-                   c.find("artist", artist))
+    songs = filter(
+        lambda x: unicode(
+            x.get('album', ''),
+            "utf-8",
+            errors="ignore"
+        ) == album,
+        c.find("artist", artist)
+    )
     add_num_requests_to_songlist(songs)
     c.disconnect()
     return render(request, 'songs.html', {
@@ -113,10 +122,16 @@ def artist_album_songs(request, artist, album):
 
 
 def album_songs(request, album):
-    album = unquote(album)
     c = MPDClient()
     c.connect("localhost", 6600)
-    songs = filter(lambda x: x.get('title', None), c.find("album", album))
+    songs = filter(
+        lambda x: unicode(
+            x.get('title', ''),
+            "utf-8",
+            errors="ignore"
+        ), 
+        c.find("album", album)
+    )
     add_num_requests_to_songlist(songs)
     c.disconnect()
     return render(request, 'songs.html', {

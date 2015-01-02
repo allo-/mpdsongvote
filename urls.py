@@ -7,10 +7,10 @@ urlpatterns = patterns('',
     url(r'^artist/$', artists, name="artists"),
 
     url(r'^album/$', albums, name="albums"),
-    url(r'^album/(?P<album>[^/]*)/$', album_songs, name='album_songs'),
+    url(r'^album/(?P<album>.*)/$', album_songs, name='album_songs'),
 
-    url(r'^artist/(?P<artist>[^/]*)/$', artist_albums, name='artist_albums'),
-    url(r'^artist/(?P<artist>[^/]*)/(?P<album>[^/]*)/$', artist_album_songs,
+    url(r'^artist/(?P<artist>.*)/$', artist_albums, name='artist_albums'),
+    url(r'^artist-album/(?P<artist>.*)/(?P<album>.*)/$', artist_album_songs,
         name='artist_album_songs'),
 
     url(r'^playlist/vote/up/$', playlist_vote,

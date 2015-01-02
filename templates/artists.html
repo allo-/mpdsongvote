@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load mpdsongvote_tags %}
 {% block content %}
 <h2>Artists</h2>
 <ul style="list-style: none">
 {% for artist in artists %}
-<li style="float: left;margin: 0.5em"><a href="{% url 'artist_albums' artist|urlencode:"" %}">{{ artist }}</a></li>
+<li style="float: left;margin: 0.5em"><a href="{% url 'artist_albums' artist %}">{{ artist }}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}

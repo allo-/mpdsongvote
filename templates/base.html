@@ -46,7 +46,7 @@ Released   : 20131014
                 </li>
                 {% if artist and album %}
                 <li>
-                <a href="{% url 'artist_albums' artist|urlencode:"" %}" accesskey="3" title="">Albums with {{ artist }}</a>
+                <a href="{% url 'artist_albums' artist %}" accesskey="3" title="">Albums with {{ artist }}</a>
                 </li>
                 {% endif %}
 			</ul>
