@@ -32,6 +32,7 @@ def playlist(request):
             favs=models.Count("songfav")
         ).values("filename", "favs")])
     for song in playlist:
+        song['file'] = to_unicode(song['file'])
         if song['file'] in favs:
             song['favs'] = favs[song['file']]
         else:
@@ -112,6 +113,7 @@ def artist_album_songs(request, artist, album):
         c.find("artist", artist)
     )
     for song in songs:
+        song['file'] = to_unicode(song['file'])
         song['attribution'] = get_attribution(song['file'])
     add_num_requests_to_songlist(songs)
     c.disconnect()
@@ -135,6 +137,7 @@ def album_songs(request, album):
         c.find("album", album)
     )
     for song in songs:
+        song['file'] = to_unicode(song['file'])
         song['attribution'] = get_attribution(song['file'])
     add_num_requests_to_songlist(songs)
     c.disconnect()
@@ -203,12 +206,14 @@ def playlist_vote(request, up):
     elif up:
         # pos -1 .. 1 (never move before the first (playing) song)
         for plpos in xrange(pos-1, 0, -1):
+            pl[plpos]['file'] = to_unicode(pl[plpos]['file'])
             if song_votes - MIN_MOVE_DIFFERENCE \
                >= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos
     else:
         # pos+1 .. end
         for plpos in xrange(pos+1, len(pl)):
+            pl[plpos]['file'] = to_unicode(pl[plpos]['file'])
             if song_votes + MIN_MOVE_DIFFERENCE \
                <= votes.get(pl[plpos]['file'], 0):
                     movepos = plpos

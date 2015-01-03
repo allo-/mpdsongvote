@@ -27,7 +27,14 @@ def get_votes():
     return dict([(x.filename, x.votes) for x in songs])
 
 
+def to_unicode(string):
+    if not isinstance(string, unicode):
+        string = unicode(string, "utf-8", errors="ignore")
+    return string
+
+
 def get_attribution(filename):
+    filename = to_unicode(filename)
     songs = Song.objects.filter(filename=filename)
     song = songs[0] if songs else None
     if song:
@@ -38,9 +45,7 @@ def get_attribution(filename):
         select={'length': 'LENGTH(filename)'}
     ).order_by('-length')
     for attribution in attributions:
-        if unicode(filename, "utf-8", errors="ignore").startswith(
-            attribution.filename
-        ):
+        if filename.startswith(attribution.filename):
             if song:
                 song.attribution = attribution
                 song.save()
