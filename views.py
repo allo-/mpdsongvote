@@ -84,7 +84,7 @@ def artist_albums(request, artist):
         set(
             map(
                 lambda x: unicode(
-                    x.get('album', None),
+                    x.get('album', ''),
                     "utf-8",
                     errors="ignore"
                 ),
