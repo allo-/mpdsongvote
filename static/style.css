@@ -52,6 +52,6 @@ ul.songlist li {
     vertical-align: top;
 }
 
-#attribution_table pre {
+#attribution_table tt {
     margin: 0
 }
