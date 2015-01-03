@@ -60,6 +60,9 @@ Released   : 20131014
                     {% for recently_played_song in recently_played_songs %}
                     <li class="{% if forloop.first %}first{% endif %}" title="{{ recently_played_song.date }}">
                         {{ recently_played_song.song.artist }} - {{ recently_played_song.song.title }}
+                        {% with song=recently_played_song.song %}
+                            {% include "snippets/attribution.html" %}
+                        {% endwith %}
                         <p style="margin: 0;height: 0.5em" />
                         {% with buttontext="request again" filename=recently_played_song.song.filename votes=recently_played_song.votes %}
                             {% include "snippets/requestbutton.html" %}
@@ -88,6 +91,9 @@ Released   : 20131014
                 {% for song_request in recent_song_requests %}
                 <li class="{% if forloop.first %}first{% endif %}" title="{{ song_request.date }}">
                     {{ song_request.song.artist }} - {{ song_request.song.title }}
+                    {% with song=song_request.song %}
+                        {% include "snippets/attribution.html" %}
+                    {% endwith %}
                     <p style="margin: 0;height: 0.5em" />
                     {% with buttontext="request" filename=song_request.song.filename votes=song_request.votes %}
                         {% include "snippets/requestbutton.html" %}
@@ -106,6 +112,9 @@ Released   : 20131014
                 {% for song_request in most_wanted_song_requests %}
                 <li class="{% if forloop.first %}first{% endif %}" title="{{ song_request.date }}">
                     {{ song_request.song.artist }} - {{ song_request.song.title }}
+                    {% with song=song_request.song %}
+                        {% include "snippets/attribution.html" %}
+                    {% endwith %}
                     <p style="margin: 0;height: 0.5em" />
                     {% with buttontext="request" filename=song_request.song.filename votes=song_request.votes %}
                         {% include "snippets/requestbutton.html" %}
