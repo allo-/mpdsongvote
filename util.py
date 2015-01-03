@@ -28,8 +28,22 @@ def get_votes():
 
 
 def get_attribution(filename):
-    for attribution in Attribution.objects.all():
-        if filename.startswith(attribution.filename):
+    songs = Song.objects.filter(filename=filename)
+    song = songs[0] if songs else None
+    if song:
+        if song.attribution:
+            return song.attribution
+
+    attributions = Attribution.objects.all().extra(
+        select={'length': 'LENGTH(filename)'}
+    ).order_by('-length')
+    for attribution in attributions:
+        if unicode(filename, "utf-8", errors="ignore").startswith(
+            attribution.filename
+        ):
+            if song:
+                song.attribution = attribution
+                song.save()
             return attribution
     return None
 

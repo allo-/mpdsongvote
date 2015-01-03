@@ -111,6 +111,8 @@ def artist_album_songs(request, artist, album):
         ) == album,
         c.find("artist", artist)
     )
+    for song in songs:
+        song['attribution'] = get_attribution(song['file'])
     add_num_requests_to_songlist(songs)
     c.disconnect()
     return render(request, 'songs.html', {
@@ -132,6 +134,8 @@ def album_songs(request, album):
         ), 
         c.find("album", album)
     )
+    for song in songs:
+        song['attribution'] = get_attribution(song['file'])
     add_num_requests_to_songlist(songs)
     c.disconnect()
     return render(request, 'songs.html', {

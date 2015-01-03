@@ -4,6 +4,7 @@
 <ul class="songlist">
 {% for song in songs %}
 <li>
+    {% include "snippets/attribution.html" %}
     {% with buttontext="request" filename=song.file votes=song.votes %}
         {% include "snippets/requestbutton.html" %}
     {% endwith %}

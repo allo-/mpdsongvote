@@ -25,9 +25,9 @@
             {% endwith %}
         </td>
         <td>
-            {% if playlist_song.attribution %}
-            <a href="{% url "show_attribution" playlist_song.attribution.id %}" title="{{ playlist_song.attribution.license.short_name }}">©</a>
-            {% endif %}
+            {% with song=playlist_song %}
+            {% include "snippets/attribution.html" %}
+            {% endwith %}
         </td>
         <td style="padding: 0">
             <div class="votecount">{{ playlist_song.votes }}</div>

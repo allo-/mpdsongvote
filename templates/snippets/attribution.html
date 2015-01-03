@@ -1,0 +1,3 @@
+{% if song.attribution %}
+<a href="{% url "show_attribution" song.attribution.id %}" title="{{ song.attribution.license.short_name }}">©</a>
+{% endif %}
