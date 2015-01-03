@@ -131,7 +131,7 @@ def album_songs(request, album):
             x.get('title', ''),
             "utf-8",
             errors="ignore"
-        ), 
+        ),
         c.find("album", album)
     )
     for song in songs:

@@ -27,7 +27,7 @@ songrequest_votes.short_description = "votes"
 
 def license_name(license):
     return license.license.name
-license_name.short_description="license"
+license_name.short_description = "license"
 
 
 class PlaylistVoteAdmin(admin.ModelAdmin):

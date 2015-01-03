@@ -79,8 +79,8 @@ class Attribution(models.Model):
     filename = models.CharField(
         max_length=2048,
         unique=True,
-        help_text='matches on the start of the string'
-        '(i.e. "artist" matches "artist/song.mp3", but not "artist2/artist.mp3")'
+        help_text='matches on the start of the string (i.e. "artist" '
+        'matches "artist/song.mp3", but not "artist2/artist.mp3")'
     )
     artist = models.CharField(max_length=255)
     url = models.URLField(blank=True)
