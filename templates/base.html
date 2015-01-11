@@ -14,7 +14,7 @@ Released   : 20131014
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>MPDSongVote</title>
+<title>{% block title %}MPDSongVote{% endblock %}</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="{% static "design/default.css" %}" rel="stylesheet" type="text/css" media="all" />
@@ -29,8 +29,8 @@ Released   : 20131014
 	<div id="header-wrapper">
 		<div id="header" class="container">
 			<div id="logo">
-				<h1><a href="#">MPDSongVote</a></h1>
-				<p>Vote for your favourite songs and help to create a great playlist</p>
+                <h1><a href="#">{% block radio_name %}MPDSongVote{% endblock %}</a></h1>
+                <p>{% block radio_name_subtitle %}Vote for your favourite songs and help to create a great playlist{% endblock %}</p>
 			</div>
 		</div>
 		<div id="menu" class="container">
@@ -128,7 +128,12 @@ Released   : 20131014
 	</div>
 </div>
 <div id="footer">
-	<p>MPDSongVote. All rights reserved. Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.</p>
+    {% block footer %}
+    <p>
+        {% block footer_text %}MPDSongVote. All rights reserved.{% endblock %}
+        Design by <a href="http://templated.co" rel="nofollow">TEMPLATED</a>.
+    </p>
+    {% endblock %}
 </div>
 </body>
 </html>
