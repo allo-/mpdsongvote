@@ -22,8 +22,8 @@ input.votebutton {
 input.votebutton.disabled {
     cursor: default;
     background-color: white;
-    color: black;
-    border: thin solid #308576;
+    color: darkgrey;
+    border: thin solid lightgrey;
 }
 
 div.votecount, span.votecount {
